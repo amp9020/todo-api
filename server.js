@@ -109,7 +109,7 @@ console.log('hello post');
  //var body = req.body;  // use _.pick
  var body = _.pick(req.body, 'description', 'completed');
 //added by me. not from course
-body.description = body.description.trim();
+//body.description = body.description.trim();
 
 	db.todo.create(body).then(function (todo){
 		res.json(todo.toJSON());
@@ -221,6 +221,18 @@ app.put('/todos/:id', function(req, res){
 				});
 	
 	});
+
+
+app.post('/users', function (req, res){
+	var body = _.pick(req.body, 'email', 'password');
+	
+	db.user.create(body).then(function (user){
+		res.json(user.toJSON());
+	}, function (e) {
+		res.status(400).json(e);
+		});
+});
+
 
 db.sequelize.sync().then(function (){
 	app.listen(PORT, function(){
