@@ -227,13 +227,13 @@ app.post('/users', function (req, res){
 	var body = _.pick(req.body, 'email', 'password');
 	
 	db.user.create(body).then(function (user){
-		res.json(user.toJSON());
+		res.json(user.toPublicJSON());
 	}, function (e) {
 		res.status(400).json(e);
 		});
 });
 
-
+// {force: true}
 db.sequelize.sync().then(function (){
 	app.listen(PORT, function(){
 		console.log('express listening on port ' + PORT + ' ! ');
