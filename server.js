@@ -108,6 +108,8 @@ console.log('hello post');
 
  //var body = req.body;  // use _.pick
  var body = _.pick(req.body, 'description', 'completed');
+//added by me. not from course
+body.description = body.description.trim();
 
 	db.todo.create(body).then(function (todo){
 		res.json(todo.toJSON());
@@ -143,14 +145,35 @@ console.log('hello post');
 
 app.delete('/todos/:id', function(req, res){
 	var todoId = parseInt(req.params.id, 10);
-	var matchedTodo = _.findWhere(todos, {id: todoId});
 	
-	if (!matchedTodo){
-		res.status(404).json({"error": "no todo found with that id"});
-		} else {
-			todos = _.without(todos, matchedTodo);
-			res.json(matchedTodo);
-			}
+	db.todo.destroy({
+			where: {
+				id: todoId
+				}
+		
+		}).then(function (rowsDeleted){
+			if (rowsDeleted === 0) {
+				res.status(404).json({
+					error: "no todo with ID"
+					});
+				} else {
+					// 204 -> everything went well and ntohing to send back
+					res.status(204).send();
+					}
+			
+			}, function(){
+				
+					res.status(500).send();
+				});
+	
+	//var matchedTodo = _.findWhere(todos, {id: todoId});
+	
+	//if (!matchedTodo){
+		//res.status(404).json({"error": "no todo found with that id"});
+		//} else {
+			//todos = _.without(todos, matchedTodo);
+			//res.json(matchedTodo);
+			//}
 	
 	});
 	
